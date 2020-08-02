@@ -1,6 +1,6 @@
 class InputButton {
   public:
-    InputButton(short pinNumber);
+    InputButton(unsigned short pinNumber);
     void tick(void);
     int long_press_limit = 1500;
 
@@ -8,7 +8,7 @@ class InputButton {
     void setLongClick(void (* func)(void));
 
   private:
-    int _pin;
+    unsigned short _pin;
     unsigned long _pressed_at;
     bool _last_state;
 

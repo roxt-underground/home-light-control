@@ -2,11 +2,13 @@
 #include <Arduino.h>
 
 
-InputButton::InputButton(short pinNumber) {
+InputButton::InputButton(unsigned short pinNumber) {
   _pin = pinNumber;
   _last_state = false;
   shortClick = &nope;
   longClick = &nope;
+
+  pinMode(_pin, INPUT);
 }
 
 
