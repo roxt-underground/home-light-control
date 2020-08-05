@@ -34,9 +34,14 @@ void DigitalLight::toggle(void) {
 
 
 void DigitalLight::delayOff(void) {
+  delayOff(1000 * 5 * 60);
+}
+
+
+void DigitalLight::delayOff(unsigned long _delay) {
   if (_state == LIGHTS_OFF) return;
   _state = LIGHTS_DELAY_OFF;
-  _off_delay = 1000 * 5 * 60; // 5 minutes
+  _off_delay = _delay;
   _off_planed_at = millis();
 }
 

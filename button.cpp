@@ -11,7 +11,6 @@ InputButton::InputButton(unsigned short pinNumber) {
   pinMode(_pin, INPUT);
 }
 
-
 void InputButton::setShortClick(void (* func)(void)) {
   shortClick = func;
 }
@@ -28,8 +27,8 @@ void InputButton::tick(void) {
 
   if (is_pressed != _last_state) {
     if (_last_state) {
-      if (current_time - _pressed_at < long_press_limit) shortClick();
-      else longClick();
+      if (current_time - _pressed_at < long_press_limit) (*shortClick)();
+      else (*longClick)();
     }
     else {
       _pressed_at = current_time;

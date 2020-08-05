@@ -11,6 +11,7 @@ class DigitalLight {
     void switchOn(void);
     void toggle(void);
     void delayOff(void);
+    void delayOff(unsigned long _delay);
 
   private:
     unsigned short _pin, _state;
