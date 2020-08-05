@@ -8,24 +8,27 @@ InputButton button2(4);
 
 DigitalLight light1(5);
 DigitalLight light2(6);
-DigitalLight light3(7);
+AnalogLight light3(9);
 
 void groupSwitchOff(void);
 
 
 void setup() {
   // put your setup code here, to run once:
-  button1.setShortClick([](){ light1.toggle(); });
-  button1.setLongClick([](){ light1.delayOff(1000 * 10); });
+  button1.setShortClick([](){ 
+                              light3.setBrightness(280);
+                            });
+  button1.setLongClick([](){ 
+                              light3.setBrightness(64);
+                           });
 
   button2.setShortClick([](){ 
-                              light2.toggle(); 
-                              light3.switchOff(); 
+                              light3.setBrightness(-12);
                             });
   button2.setLongClick([]() {
-                              light1.switchOn();
-                              light2.switchOn();
-                              light3.switchOn();
+                              light1.switchOff();
+                              light2.switchOff();
+                              light3.switchOff();
                             });
 }
 
@@ -35,10 +38,6 @@ void loop() {
   
   light1.tick();
   light2.tick();
+  light3.tick();
   delay(10);
-}
-
-void groupSwitchOff(void) {
-  light1.switchOn();
-  light2.switchOn();
 }
