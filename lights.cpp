@@ -47,26 +47,77 @@ void DigitalLight::checkDelayOff(void) {
   if (millis() - _off_planed_at > _off_delay) switchOff();
 }
 
-AnalogLight::AnalogLight(unsigned char pinNumber): DigitalLight(pinNumber) { }
+AnalogLight::AnalogLight(unsigned char pinNumber)
+  : DigitalLight(pinNumber),
+    _brightness(0)
+{ }
 
-void AnalogLight::setBrightness(short brtns){
-  if (brtns <= 0) {
-    switchOff();
-    return;
-  }
-  if (_state != LIGHTS_SHAIDING) _state = LIGHTS_ON;
-  _brightness = min(255, brtns);
-  if (_brightness == 255) {
-    switchOn();
-  }
-  analogWrite(_pin, _brightness);
+void AnalogLight::tick(void) {
+  DigitalLight::tick();
+  if (_state == LIGHTS_SHAIDING) {checkShaiding();  }
+}
+
+void AnalogLight::switchOff(void) {
+  DigitalLight::switchOff();
+  _brightness = 0;
 }
 
 
-void AnalogLight::shadeBrightness(unsigned short brtns){}
+void AnalogLight::switchOn(void) {
+  DigitalLight::switchOn();
+  _brightness = 255;
+}
 
 
-void AnalogLight::brightnessUp(unsigned short brtns = 5){}
+void AnalogLight::setBrightness(short brtns){
+  _brightness = min(255, max(brtns, 0));
+  if (_brightness == 0) {
+    switchOff();
+    return;
+  }
+  if (_brightness == 255) {
+    switchOn();
+    return;
+  }
+  if (_state != LIGHTS_SHAIDING) _state = LIGHTS_ON;
+  
+  analogWrite(_pin, _brightness);
+}
+
+void AnalogLight::shadeBrightness(unsigned short brtns, 
+                                  unsigned long shade_timeout=1000, 
+                                  short brightness_step=25)
+{
+  _state = LIGHTS_SHAIDING;
+  _brightness_step = abs((int)brightness_step);
+  _goal_brightness = min(255, max(brtns, 0));
+  if (_brightness > _goal_brightness) _brightness_step = -_brightness_step;
+  _shade_timeout = shade_timeout;
+  _last_shade_step_time = millis();
+}
 
 
-void AnalogLight::brightnessDown(unsigned short brtns = 5){}
+void AnalogLight::brightnessUp(unsigned short brtns = 5) {
+  setBrightness(_brightness + brtns);
+}
+
+
+void AnalogLight::brightnessDown(unsigned short brtns = 5) {
+  setBrightness(_brightness - brtns);
+}
+
+
+void AnalogLight::checkShaiding(void) {
+
+  unsigned long millis_passed = millis() - _last_shade_step_time;
+  if (millis_passed < _shade_timeout) return;
+  short brt_delta = abs(_brightness - _goal_brightness), b_step = abs(_brightness_step);
+  
+  if(b_step > brt_delta) {
+    _state = LIGHTS_ON; // if _goal_brightness == 0 it will be owerriden in setBrightness
+    setBrightness(_goal_brightness);
+  }
+  else setBrightness(_brightness + _brightness_step);
+  
+  _last_shade_step_time = millis();
+}

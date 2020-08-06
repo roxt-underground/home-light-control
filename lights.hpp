@@ -27,12 +27,21 @@ class DigitalLight {
 class AnalogLight: public DigitalLight {
   public:
     AnalogLight(unsigned char pinNumber);
+    
+    void tick(void);
+    void switchOff(void);
+    void switchOn(void);
 
     void setBrightness(short brtns);
-    void shadeBrightness(unsigned short brtns);
+    void shadeBrightness(unsigned short brtns, 
+                         unsigned long shade_timeout=1000, 
+                         short brightness_step=25);
     void brightnessUp(unsigned short brtns = 5);
     void brightnessDown(unsigned short brtns = 5);
   private:
-    unsigned short _brightness, _brightness_step;
+    void checkShaiding(void);
+    short _brightness_step;
+    short _brightness, _goal_brightness;
     unsigned long _shade_timeout, _last_shade_step_time;
+    
 };

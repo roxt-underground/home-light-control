@@ -16,14 +16,14 @@ void groupSwitchOff(void);
 void setup() {
   // put your setup code here, to run once:
   button1.setShortClick([](){ 
-                              light3.setBrightness(280);
+                              light3.shadeBrightness(280, 30, 15);
                             });
   button1.setLongClick([](){ 
                               light3.setBrightness(64);
                            });
 
   button2.setShortClick([](){ 
-                              light3.setBrightness(-12);
+                              light3.shadeBrightness(16, 30, 15);
                             });
   button2.setLongClick([]() {
                               light1.switchOff();

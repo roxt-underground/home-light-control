@@ -2,7 +2,7 @@ class InputButton {
   public:
     InputButton(unsigned short pinNumber);
     void tick(void);
-    int long_press_limit = 1500;
+    int long_press_limit = 500;
 
     void setShortClick(void (* func)(void));
     void setLongClick(void (* func)(void));
