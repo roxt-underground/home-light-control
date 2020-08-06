@@ -85,15 +85,30 @@ void AnalogLight::setBrightness(short brtns){
 }
 
 void AnalogLight::shadeBrightness(unsigned short brtns, 
-                                  unsigned long shade_timeout=1000, 
-                                  short brightness_step=25)
+                                  unsigned long shade_timeout=30, 
+                                  short brightness_step=15)
 {
   _state = LIGHTS_SHAIDING;
   _brightness_step = abs((int)brightness_step);
+  if (_brightness_step == 0) return;
+
   _goal_brightness = min(255, max(brtns, 0));
   if (_brightness > _goal_brightness) _brightness_step = -_brightness_step;
   _shade_timeout = shade_timeout;
   _last_shade_step_time = millis();
+}
+
+void AnalogLight::shadeToggle(unsigned long shade_timeout=30, 
+                 short brightness_step=15) {
+  if (_state == LIGHTS_OFF) shadeBrightness(255, shade_timeout, brightness_step);
+  else if (_state == LIGHTS_ON) shadeBrightness(0, shade_timeout, brightness_step);
+  else if (_state == LIGHTS_DELAY_OFF) _state = LIGHTS_ON;
+  else if (_state == LIGHTS_SHAIDING) {
+    short _goal;
+    if (_brightness_step > 0) _goal = 0;
+    else _goal = 255;
+    shadeBrightness(_goal, shade_timeout, brightness_step);
+  }
 }
 
 

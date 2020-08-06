@@ -34,8 +34,10 @@ class AnalogLight: public DigitalLight {
 
     void setBrightness(short brtns);
     void shadeBrightness(unsigned short brtns, 
-                         unsigned long shade_timeout=1000, 
-                         short brightness_step=25);
+                         unsigned long shade_timeout=30, 
+                         short brightness_step=15);
+    void shadeToggle(unsigned long shade_timeout=30, 
+                     short brightness_step=15);
     void brightnessUp(unsigned short brtns = 5);
     void brightnessDown(unsigned short brtns = 5);
   private:
