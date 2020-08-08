@@ -3,10 +3,10 @@
 
 #define p_void (void(*)(void))
 
-InputButton button1(3);
-InputButton button2(4);
+InputButton button1(A0);
+InputButton button2(A1);
 
-DigitalLight light1(5);
+AnalogLight light1(5);
 DigitalLight light2(6);
 AnalogLight light3(9);
 
@@ -19,17 +19,16 @@ void setup() {
                               light3.shadeToggle();
                             });
   button1.setLongClick([](){ 
-                              light3.shadeBrightness(16, 30, 5);
-                              light2.switchOn();
+                              light3.shadeBrightness(24, 30, 5);
                            });
 
   button2.setShortClick([](){ 
-                              light1.toggle();
+                              light1.shadeToggle();
                             });
   button2.setLongClick([]() {
-                              light1.switchOff();
-                              light2.switchOff();
-                              light3.switchOff();
+                              light1.shadeBrightness(0, 30, 5);
+//                              light2.switchOff();
+                              light3.shadeByTime(0, 30000);
                             });
 }
 

@@ -84,6 +84,7 @@ void AnalogLight::setBrightness(short brtns){
   analogWrite(_pin, _brightness);
 }
 
+
 void AnalogLight::shadeBrightness(unsigned short brtns, 
                                   unsigned long shade_timeout=30, 
                                   short brightness_step=15)
@@ -97,6 +98,14 @@ void AnalogLight::shadeBrightness(unsigned short brtns,
   _shade_timeout = shade_timeout;
   _last_shade_step_time = millis();
 }
+
+
+void AnalogLight::shadeByTime(unsigned short brtns, unsigned long shade_timeout=10000) {
+  short goal = min(255, max(brtns, 0)), delta = goal - (short)_brightness;
+  short abt_step = max(delta / 50, 1) ;  // 255/5 ~= 50
+  shadeBrightness(goal, shade_timeout/abs(delta/abt_step), abt_step);
+}
+
 
 void AnalogLight::shadeToggle(unsigned long shade_timeout=30, 
                  short brightness_step=15) {
