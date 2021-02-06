@@ -3,6 +3,10 @@
 #define LIGHTS_DELAY_OFF 2
 #define LIGHTS_SHAIDING 3
 
+#ifndef PWMRANGE
+#define PWMRANGE 255
+#endif
+
 
 class DigitalLight {
   public:
