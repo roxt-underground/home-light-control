@@ -6,9 +6,9 @@
 InputButton button1(A0);
 InputButton button2(A1);
 
-AnalogLight light1(5);
-DigitalLight light2(6);
-AnalogLight light3(9);
+AnalogLight light1(D5);
+DigitalLight light2(D6);
+AnalogLight light3(D9);
 
 void groupSwitchOff(void);
 

@@ -1,6 +1,19 @@
 #include "lights.hpp"
 #include <Arduino.h>
+#include <math.h>
 
+
+#if defined(ESP8266) || defined(ESP32)
+long e_min(long a, long b) {
+  if (a < b) return a;
+  else return b;
+}
+
+long e_max(long a, long b) {
+  if (a > b) return a;
+  else return b;
+}
+#endif
 
 DigitalLight::DigitalLight(unsigned char pinNumber)
   : _pin(pinNumber),
@@ -35,7 +48,7 @@ void DigitalLight::toggle(void) {
 
 
 
-void DigitalLight::delayOff(unsigned long _delay = 1000 * 30) {
+void DigitalLight::delayOff(unsigned long _delay) {
   if (_state == LIGHTS_OFF) return;
   _state = LIGHTS_DELAY_OFF;
   _off_delay = _delay;
@@ -65,17 +78,21 @@ void AnalogLight::switchOff(void) {
 
 void AnalogLight::switchOn(void) {
   DigitalLight::switchOn();
-  _brightness = 255;
+  _brightness = PWMRANGE;
 }
 
 
 void AnalogLight::setBrightness(short brtns){
-  _brightness = min(255, max(brtns, 0));
+#if defined(ESP8266) || defined(ESP32)
+  _brightness = e_min(PWMRANGE, e_max(brtns, 0));
+# else
+  _brightness = min(PWMRANGE, max(brtns, 0));
+# endif
   if (_brightness == 0) {
     switchOff();
     return;
   }
-  if (_brightness == 255) {
+  if (_brightness == PWMRANGE) {
     switchOn();
     return;
   }
@@ -86,47 +103,56 @@ void AnalogLight::setBrightness(short brtns){
 
 
 void AnalogLight::shadeBrightness(unsigned short brtns, 
-                                  unsigned long shade_timeout=30, 
-                                  short brightness_step=15)
+                                  unsigned long shade_timeout, 
+                                  short brightness_step)
 {
   _state = LIGHTS_SHAIDING;
   _brightness_step = abs((int)brightness_step);
   if (_brightness_step == 0) return;
-
-  _goal_brightness = min(255, max(brtns, 0));
+  
+#if defined(ESP8266) || defined(ESP32)
+  _goal_brightness = e_min(PWMRANGE, e_max(brtns, 0));
+#else
+  _goal_brightness = min(PWMRANGE, max(brtns, 0));
+#endif
   if (_brightness > _goal_brightness) _brightness_step = -_brightness_step;
   _shade_timeout = shade_timeout;
   _last_shade_step_time = millis();
 }
 
 
-void AnalogLight::shadeByTime(unsigned short brtns, unsigned long shade_timeout=10000) {
-  short goal = min(255, max(brtns, 0)), delta = goal - (short)_brightness;
+void AnalogLight::shadeByTime(unsigned short brtns, unsigned long shade_timeout) {
+#if defined(ESP8266) || defined(ESP32)
+  short goal = e_min(PWMRANGE, e_max(brtns, 0)), delta = goal - (short)_brightness;
+  short abt_step = e_max(delta / 50, 1) ;  // 255/5 ~= 50
+#else
+  short goal = min(PWMRANGE, max(brtns, 0)), delta = goal - (short)_brightness;
   short abt_step = max(delta / 50, 1) ;  // 255/5 ~= 50
+#endif
   shadeBrightness(goal, shade_timeout/abs(delta/abt_step), abt_step);
 }
 
 
-void AnalogLight::shadeToggle(unsigned long shade_timeout=30, 
-                 short brightness_step=15) {
-  if (_state == LIGHTS_OFF) shadeBrightness(255, shade_timeout, brightness_step);
+void AnalogLight::shadeToggle(unsigned long shade_timeout, 
+                 short brightness_step) {
+  if (_state == LIGHTS_OFF) shadeBrightness(PWMRANGE, shade_timeout, brightness_step);
   else if (_state == LIGHTS_ON) shadeBrightness(0, shade_timeout, brightness_step);
   else if (_state == LIGHTS_DELAY_OFF) _state = LIGHTS_ON;
   else if (_state == LIGHTS_SHAIDING) {
     short _goal;
     if (_brightness_step > 0) _goal = 0;
-    else _goal = 255;
+    else _goal = PWMRANGE;
     shadeBrightness(_goal, shade_timeout, brightness_step);
   }
 }
 
 
-void AnalogLight::brightnessUp(unsigned short brtns = 5) {
+void AnalogLight::brightnessUp(unsigned short brtns) {
   setBrightness(_brightness + brtns);
 }
 
 
-void AnalogLight::brightnessDown(unsigned short brtns = 5) {
+void AnalogLight::brightnessDown(unsigned short brtns) {
   setBrightness(_brightness - brtns);
 }
 
