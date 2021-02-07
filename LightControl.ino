@@ -6,9 +6,9 @@
 InputButton button1(A0);
 InputButton button2(A1);
 
-AnalogLight light1(D5);
-DigitalLight light2(D6);
-AnalogLight light3(D9);
+AnalogLight light1(3); // PWM pin
+DigitalLight light2(12); // simple digital pin
+AnalogLight light3(6); // PWM pin
 
 void groupSwitchOff(void);
 
@@ -16,19 +16,19 @@ void groupSwitchOff(void);
 void setup() {
   // put your setup code here, to run once:
   button1.setShortClick([](){ 
-                              light3.shadeToggle();
+                              light1.shadeToggle();
                             });
   button1.setLongClick([](){ 
-                              light3.shadeBrightness(24, 30, 5);
+                              light2.toggle();
                            });
 
   button2.setShortClick([](){ 
-                              light1.shadeToggle();
+                              light3.shadeToggle();
                             });
   button2.setLongClick([]() {
-                              light1.shadeBrightness(0, 30, 5);
-//                              light2.switchOff();
-                              light3.shadeByTime(0, 30000);
+                              light1.shadeByTime(0, 5000);
+                              light2.delayOff(10000);
+                              light3.shadeByTime(0, 15000);
                             });
 }
 
