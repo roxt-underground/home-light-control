@@ -30,13 +30,13 @@ void DigitalLight::tick(void) {
 
 void DigitalLight::switchOff(void) {
   _state = LIGHTS_OFF;
-  digitalWrite(_pin, LOW);
+  digitalWrite(_pin, low_state);
 }
 
 
 void DigitalLight::switchOn(void) {
   _state = LIGHTS_ON;
-  digitalWrite(_pin, HIGH);
+  digitalWrite(_pin, high_state);
 }
 
 
