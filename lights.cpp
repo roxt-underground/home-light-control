@@ -60,6 +60,12 @@ void DigitalLight::checkDelayOff(void) {
   if (millis() - _off_planed_at > _off_delay) switchOff();
 }
 
+
+DigitalLightInverted::DigitalLightInverted(unsigned char pinNumber)
+  : DigitalLight(pinNumber)
+{ }
+
+
 AnalogLight::AnalogLight(unsigned char pinNumber)
   : DigitalLight(pinNumber),
     _brightness(0)

@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #define LIGHTS_OFF 0
 #define LIGHTS_ON 1
 #define LIGHTS_DELAY_OFF 2
@@ -25,6 +27,16 @@ class DigitalLight {
   private:
     unsigned long _off_delay = 0, _off_planed_at; 
     void checkDelayOff(void);
+    const unsigned short low_state = LOW, high_state = HIGH;
+};
+
+
+class DigitalLightInverted: public DigitalLight {
+  public:
+    DigitalLightInverted(unsigned char pinNumber);
+
+  private:
+    const unsigned short low_state = HIGH, high_state = LOW;
 };
 
 
