@@ -20,6 +20,7 @@ DigitalLight::DigitalLight(unsigned char pinNumber)
     _state(LIGHTS_OFF)
 {
   pinMode(_pin, OUTPUT);
+  this->switchOff();
 }
 
 
@@ -30,13 +31,13 @@ void DigitalLight::tick(void) {
 
 void DigitalLight::switchOff(void) {
   _state = LIGHTS_OFF;
-  digitalWrite(_pin, low_state);
+  digitalWrite(_pin, this->getLow());
 }
 
 
 void DigitalLight::switchOn(void) {
   _state = LIGHTS_ON;
-  digitalWrite(_pin, high_state);
+  digitalWrite(_pin, this->getHigh());
 }
 
 
@@ -63,7 +64,9 @@ void DigitalLight::checkDelayOff(void) {
 
 DigitalLightInverted::DigitalLightInverted(unsigned char pinNumber)
   : DigitalLight(pinNumber)
-{ }
+{
+  this->switchOff();
+}
 
 
 AnalogLight::AnalogLight(unsigned char pinNumber)

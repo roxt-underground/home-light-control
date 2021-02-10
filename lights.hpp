@@ -15,19 +15,22 @@ class DigitalLight {
     DigitalLight(unsigned char pinNumber);
     void tick(void);
 
-    void switchOff(void);
-    void switchOn(void);
+    virtual void switchOff(void);
+    virtual void switchOn(void);
     void toggle(void);
     void delayOff(unsigned long _delay = 1000 * 30);
 
   protected:
     unsigned char _state;
     const unsigned char _pin;
+    const unsigned short low_state, high_state;
+
+    virtual const unsigned short getHigh() { return HIGH; };
+    virtual const unsigned short getLow() { return LOW; };
 
   private:
     unsigned long _off_delay = 0, _off_planed_at; 
     void checkDelayOff(void);
-    const unsigned short low_state = LOW, high_state = HIGH;
 };
 
 
@@ -35,8 +38,11 @@ class DigitalLightInverted: public DigitalLight {
   public:
     DigitalLightInverted(unsigned char pinNumber);
 
-  private:
-    const unsigned short low_state = HIGH, high_state = LOW;
+    
+
+  protected:
+    virtual const unsigned short getHigh() override { return LOW; };
+    virtual const unsigned short getLow() override { return HIGH; };
 };
 
 
