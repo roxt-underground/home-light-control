@@ -23,7 +23,6 @@ class DigitalLight {
   protected:
     unsigned char _state;
     const unsigned char _pin;
-    const unsigned short low_state, high_state;
 
     virtual const unsigned short getHigh() { return HIGH; };
     virtual const unsigned short getLow() { return LOW; };

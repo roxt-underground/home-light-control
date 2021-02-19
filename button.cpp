@@ -22,7 +22,7 @@ void InputButton::setLongClick(void (* func)(void)) {
 
 
 void InputButton::tick(void) {
-  bool is_pressed = (digitalRead(_pin) == HIGH);
+  bool is_pressed = currentState();
   unsigned long current_time = millis();
 
   if (is_pressed != _last_state) {
@@ -37,4 +37,19 @@ void InputButton::tick(void) {
   }
 }
 
-void nope(void) {}
+bool InputButton::currentState(void){
+  return digitalRead(_pin) == HIGH;
+}
+
+
+InputButtonInversed::InputButtonInversed(unsigned short pinNumber, unsigned short _pinMode)
+  :InputButton(pinNumber)
+{
+  pinMode(_pin, _pinMode);
+}
+
+bool InputButtonInversed::currentState(void) {
+  return digitalRead(_pin) == LOW;
+}
+
+void nope(void) {};
